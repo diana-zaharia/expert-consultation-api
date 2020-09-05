@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
-    private static final String USER_AS_STRING = "john,doe,john@email.com,42345,district,org";
+    private static final String USER_AS_STRING = "john,doe,john@email.com,42345,district,org,architect";
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -111,7 +111,7 @@ public class UserServiceTest {
 
         final MultipartFile file = mock(MultipartFile.class);
         when(file.getInputStream()).thenReturn(
-                new ByteArrayInputStream("john,doe,john@email.com,42345,district,org".getBytes()));
+                new ByteArrayInputStream("john,doe,john@email.com,42345,district,org,architect".getBytes()));
         when(userRepository.findAllByEmailIn(Collections.singletonList("john@email.com")))
                 .thenReturn(Collections.singletonList(user));
 
@@ -130,7 +130,7 @@ public class UserServiceTest {
 
         final MultipartFile file = mock(MultipartFile.class);
         when(file.getInputStream()).thenReturn(
-                new ByteArrayInputStream("john,doe,john@email.com,42345,district,org".getBytes()));
+                new ByteArrayInputStream("john,doe,john@email.com,42345,district,org,architect".getBytes()));
 
         final List<UserDto> results = userService.extractFromCsv(file);
 
@@ -156,6 +156,7 @@ public class UserServiceTest {
         assertThat(results.get(0).getPhoneNumber()).isEqualTo("42345");
         assertThat(results.get(0).getDistrict()).isEqualTo("district");
         assertThat(results.get(0).getOrganisation()).isEqualTo("org");
+        assertThat(results.get(0).getSpecialization()).isEqualTo("architect");
         assertThat(results.get(0).getRole()).isEqualTo(UserRole.CONTRIBUTOR);
     }
 }

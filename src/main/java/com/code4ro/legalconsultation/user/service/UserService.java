@@ -9,6 +9,7 @@ import com.code4ro.legalconsultation.user.model.persistence.UserRole;
 import com.code4ro.legalconsultation.user.repository.UserRepository;
 import com.code4ro.legalconsultation.invitation.service.InvitationService;
 import com.code4ro.legalconsultation.mail.service.MailApi;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -50,6 +51,8 @@ public class UserService {
         this.mailApi = mailApi;
         this.mapperService = mapperService;
         this.invitationService = invitationService;
+
+        csvMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
     }
 
     public User saveEntity(final User user) {
@@ -119,6 +122,7 @@ public class UserService {
                 .addColumn("phoneNumber")
                 .addColumn("district")
                 .addColumn("organisation")
+                .addColumn("specialization")
                 .build();
         final ObjectReader reader = csvMapper.readerFor(UserDto.class).with(schema);
         return reader.<UserDto>readValues(stream).readAll();
