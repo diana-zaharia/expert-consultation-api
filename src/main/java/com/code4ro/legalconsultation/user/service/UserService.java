@@ -6,6 +6,7 @@ import com.code4ro.legalconsultation.invitation.model.persistence.Invitation;
 import com.code4ro.legalconsultation.user.model.persistence.User;
 import com.code4ro.legalconsultation.user.model.dto.UserDto;
 import com.code4ro.legalconsultation.user.model.persistence.UserRole;
+import com.code4ro.legalconsultation.user.model.persistence.UserSpecialization;
 import com.code4ro.legalconsultation.user.repository.UserRepository;
 import com.code4ro.legalconsultation.invitation.service.InvitationService;
 import com.code4ro.legalconsultation.mail.service.MailApi;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -187,6 +189,11 @@ public class UserService {
                 .withMatcher("firstName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
                 .withMatcher("lastName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
                 .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+
+        if (EnumUtils.isValidEnum(UserSpecialization.class, term.toUpperCase())) {
+            userWithDesiredFields.setSpecialization(UserSpecialization.valueOf(term.toUpperCase()));
+            anyMatcher = anyMatcher.withMatcher("specialization", ExampleMatcher.GenericPropertyMatchers.exact().ignoreCase());
+        }
 
         return userRepository.findAll(Example.of(userWithDesiredFields, anyMatcher));
     }
